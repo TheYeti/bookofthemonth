@@ -34,7 +34,10 @@ class BotM_Widget extends WP_Widget {
         if (!empty($instance['title'])) {
             echo $args['before_title'] . apply_filters('widget_title', $instance['title']) . $args['after_title'];
         }
-        echo __('Add Book Info Here', 'text_domain');
+        if (!empty($instance['isbn'])) {
+            echo __('ISBN: ' . $instance['isbn'], 'text_domain');
+        } else
+            echo __('No Book Info Set', 'text_domain');
         echo $args['after_widget'];
     }
 
@@ -46,12 +49,19 @@ class BotM_Widget extends WP_Widget {
     public function form($instance)
     {
         $title = !empty($instance['title']) ? $instance['title'] : __('New Title', 'text_domain');
+        $isbn = !empty($instance['isbn']) ? $instance['isbn'] : __('Enter ISBN', 'text_domain');
         ?>
         <p>
             <label for="<?php echo $this->get_field_id('title'); ?>">
                 <?php _e('Title: '); ?>
             </label>
             <input class="widgetfat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo esc_attr($title); ?>">
+        </p>
+        <p>
+            <label for="<?php echo $this->get_field_id('isbn'); ?>">
+                <?php _e('ISBN: '); ?>
+            </label>
+            <input class="widgetfat" id="<?php echo $this->get_field_id('isbn'); ?>" name="<?php echo $this->get_field_name('isbn'); ?>" type="text" value="<?php echo esc_attr($isbn); ?>">
         </p>
         <?php
     }
@@ -68,9 +78,15 @@ class BotM_Widget extends WP_Widget {
     {
         $instance = array();
         $instance['title'] = (!empty($new_instance['title'])) ? strip_tags($new_instance['title']) : '';
+        $instance['isbn'] = (!empty($new_instance['isbn'])) ? strip_tags($new_instance['isbn']) : '';
 
         return $instance;
     }
+}
+
+function botm_header() {
+    wp_enqueue_script('gapi', '//apis.google.com/js/client.js');
+    wp_enqueue_script('botm', plugins_url('js/wowpress.js', __FILE__));
 }
 
 function register_botm_widget() {
@@ -78,3 +94,5 @@ function register_botm_widget() {
 }
 
 add_action('widgets_init', 'register_botm_widget');
+add_action('wp_head', 'botm_header');
+add_action('wp_enqueue_scripts', 'botm_header');
