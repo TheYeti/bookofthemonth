@@ -86,7 +86,7 @@ class BotM_Widget extends WP_Widget {
 
 function botm_header() {
     wp_enqueue_script('gapi', '//apis.google.com/js/client.js');
-    wp_enqueue_script('botm', plugins_url('js/wowpress.js', __FILE__));
+    wp_enqueue_script('botm', plugins_url('js/botm.js', __FILE__));
 }
 
 function register_botm_widget() {
