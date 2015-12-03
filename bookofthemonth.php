@@ -93,6 +93,56 @@ function register_botm_widget() {
     register_widget('BotM_Widget');
 }
 
+function botm_add_admin_menu(  ) {
+    add_submenu_page( 'options-general.php', 'Book of the Month', 'Book of the Month', 'manage_options', 'bookofthemonth', 'botm_options_page' );
+}
+
+function botm_settings_init(  ) {
+    register_setting( 'pluginPage', 'botm_settings' );
+
+    add_settings_section(
+        'botm_pluginPage_section',
+        __( 'General Settings', 'botm' ),
+        'botm_settings_section_callback',
+        'pluginPage'
+    );
+
+    add_settings_field(
+        'botm_apikey',
+        __( 'API Key', 'botm' ),
+        'botm_apikey_render',
+        'pluginPage',
+        'botm_pluginPage_section'
+    );
+}
+
+function botm_apikey_render(  ) {
+    $options = get_option( 'botm_settings' );
+    ?>
+    <input type='text' name='botm_settings[botm_apikey]' value='<?php echo $options['botm_apikey']; ?>'>
+    <?php
+}
+
+
+function botm_settings_section_callback(  ) {
+    echo __( 'You need a Google Developer API Key to use this plugin', 'botm' );
+}
+
+function botm_options_page(  ) {
+    ?>
+    <form action='options.php' method='post'>
+        <h2>BookoftheMonth</h2>
+        <?php
+        settings_fields( 'pluginPage' );
+        do_settings_sections( 'pluginPage' );
+        submit_button();
+        ?>
+    </form>
+    <?php
+}
+
 add_action('widgets_init', 'register_botm_widget');
 add_action('wp_head', 'botm_header');
 add_action('wp_enqueue_scripts', 'botm_header');
+add_action( 'admin_menu', 'botm_add_admin_menu' );
+add_action( 'admin_init', 'botm_settings_init' );
