@@ -119,7 +119,7 @@ function botm_settings_init(  ) {
 function botm_apikey_render(  ) {
     $options = get_option( 'botm_settings' );
     ?>
-    <input type='text' name='botm_settings[botm_apikey]' value='<?php echo $options['botm_apikey']; ?>'>
+    <input type='text' label="apikey" name='botm_settings[botm_apikey]' value='<?php echo $options['botm_apikey']; ?>'>
     <?php
 }
 
